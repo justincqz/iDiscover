@@ -65,3 +65,25 @@ router.post("/newUser", (req, res) =>{
         return res.json({success: err != null, error: err})
     })
 })
+
+router.post("/newLocation", (req, res) => {
+    let location = new Location();
+    const Latitude = req.body.Latitude;
+    const Longtitude = req.body.Longtitude;
+    const Name = req.body.Name;
+    
+    if (!Latitude || !Longtitude || !Name) {
+        return res.json({
+            first:req.body,
+            success: false,
+            error:"Invalid Inputs"
+        });
+    }
+
+    location.Latitude = Latitude;
+    location.Longtitude = Longtitude;
+    location.Name = Name;
+    location.save(err => {
+        return res.json({success: err != null, error: err})
+    })
+})
