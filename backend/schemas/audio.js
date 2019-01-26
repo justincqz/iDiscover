@@ -9,4 +9,4 @@ const AudioSchema = new Schema(
     }
 );
 
-module.exports = mongoose.model("Location", LocationSchema);
+module.exports = mongoose.model("Audio", AudioSchema);

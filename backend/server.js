@@ -7,6 +7,10 @@ const API_PORT = 3001;
 const app = express();
 const router = express.Router();
 
+const User = require("./schemas/user");
+const Location = require("./schemas/location");
+const Audio = require("./schemas/audio")
+
 
 const dbRoute = "mongodb://admin:admin99@ds063929.mlab.com:63929/breadcrumbs";
 
@@ -39,29 +43,43 @@ router.get("/", (req, res) => {
     console.log("SUCCESSFUL GET REQUEST");
 })
 
-router.post("/newUser", (req, res) =>{
+router.post("/newUser", (req, res) => {
     let user = new User();
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
-    const password;
-    sjcl.encrypt(password, req.body.password);
+    const password = req.body.password;
+
+    const saltBits = sjcl.random.randomWords(8);
+    const derivedKey = sjcl.misc.pbkdf2(password, saltBits, 1000, 256);
+    var key = sjcl.codec.base64.fromBits(derivedKey);
+
+    const salt = sjcl.codec.base64.fromBits(saltBits)
+
     // TODO: Test the complexcity of password
-    
+
     const emailAddress = req.body.emailAddress;
     // TODO: Check the uniqueness of the email address
 
     if (!firstName || !lastName || !emailAddress) {
         return res.json({
-            first:req.body,
+            first: req.body,
             success: false,
-            error:"Invalid Inputs"
+            error: "Invalid Inputs"
         });
     }
+
+    console.log(password);
     user.FirstName = firstName;
     user.LastName = lastName;
     user.Email = emailAddress;
-    user.Password = password;
+    user.Password = key;
+    user.SaltBits = salt;
+
     user.save(err => {
-        return res.json({success: err != null, error: err})
+        if (err) {
+            return res.json({ success: false });
+        } else {
+            return res.json({ success: true, user: user })
+        }
     })
 })
