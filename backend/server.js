@@ -68,13 +68,35 @@ router.post("/newUser", (req, res) =>{
     })
 })*/
 
+router.post("/updateLocationWithAudio", (req, res) => {
+    const name = req.body.locationName;
+    const audioID = req.body.audioID;
+    Location.findOneAndUpdate(
+        {'Name': name},
+        {'$push': {'AudioIDs': audioID}},
+        (err, raw) => {
+            if (err) {
+                return res.json({
+                    success: false,
+                    error: err
+                })
+            }
+            console.log("the raw data was", raw);
+            return res.json({
+                success: true,
+                data: raw
+            })
+        }
+    )
+}) 
+
 router.post("/newLocation", (req, res) => {
     let location = new Location();
     const Latitude = req.body.Latitude;
-    const Longtitude = req.body.Longtitude;
+    const Longitude = req.body.Longitude;
     const Name = req.body.Name;
-    
-    if (!Latitude || !Longtitude || !Name) {
+
+    if (!Latitude || !Longitude || !Name) {
         return res.json({
             first:req.body,
             success: false,
@@ -83,10 +105,10 @@ router.post("/newLocation", (req, res) => {
     }
 
     location.Latitude = Latitude;
-    location.Longtitude = Longtitude;
+    location.Longitude = Longitude;
     location.Name = Name;
     location.save(err => {
-        return res.json({success: err != null, error: err})
+        return res.json({success: err == null, error: err})
     })
 })
 
