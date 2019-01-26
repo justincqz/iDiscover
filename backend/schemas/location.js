@@ -8,7 +8,8 @@ const LocationSchema = new Schema(
         Latitude: { type: Number, required: true },
         Name: { type: String, required: true },
         AudioIDs: { type: [ObjectIdSchema], default: [] },
-        RouteIDs: { type: [ObjectIdSchema], default: [] }
+        RouteIDs: { type: [ObjectIdSchema], default: [] },
+        Type: { type: String, required: true }
     }
 );
 

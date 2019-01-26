@@ -7,7 +7,8 @@ const RouteSchema = new Schema(
         AudioIDs: { type: [ObjectIdSchema], default: [] },
         Title: { type: String, required: true },
         Description: { type: String, required: true },
-        Votes: { type: Number, default: 0 }
+        Votes: { type: Number, default: 0 },
+        Creator: { type: String, required: true }
     }
 );
 

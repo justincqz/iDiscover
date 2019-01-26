@@ -8,7 +8,8 @@ const AudioSchema = new Schema(
         LocationID: { type: ObjectIdSchema, required: true },
         Votes: { type: Number, default: 0 },
         Artist: { type: String, required: true },
-        Title: { type: String, required: true }
+        Title: { type: String, required: true },
+        PlayCount: { type: Number, default: 0 }
     }
 );
 
