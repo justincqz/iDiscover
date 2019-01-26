@@ -1,14 +1,4 @@
-const express = require('express');
-const app = express();
-const https = require("https");
-const GOOGLE_API_KEY = "AIzaSyCEQQ1KxrsWt4Km6a7E_A_vTgBTNk8Tms8";
-
-// meters
-const searchRadius = 500;
-
-const landmarkType = "museum";
-
-app.get('/landmarks/', function(req, res) {
+exports.get_close_landmarks = function(req, res) {
   const lat = req.query.lat;
   const lon = req.query.lon;
 
@@ -49,9 +39,9 @@ app.get('/landmarks/', function(req, res) {
   });
 
 
-});
+};
 
-app.get('/directions', function(req, res) {
+exports.get_planned_route = function(req, res) {
   var placeIDs = req.query.places.split(",");
   var optimise = req.query.optimise;
 
@@ -112,6 +102,4 @@ app.get('/directions', function(req, res) {
     console.log("Error :" + err.message);
   });
 
-});
-
-app.listen(8080);
+};
