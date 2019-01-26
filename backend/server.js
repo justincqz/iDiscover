@@ -6,11 +6,10 @@ const sjcl = require("sjcl");
 const API_PORT = 3001;
 const app = express();
 const router = express.Router();
-
 const Location = require('./schemas/location')
-
-
 const dbRoute = "mongodb://admin:admin99@ds063929.mlab.com:63929/breadcrumbs";
+
+
 
 mongoose.connect(
     dbRoute,
@@ -167,3 +166,4 @@ router.get("/location/:longitude/:latitude", (req, res) => {
                         return res.json({success: true, loc: loc});
                     });
 })
+
