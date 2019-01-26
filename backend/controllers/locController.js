@@ -73,6 +73,7 @@ exports.newLocationFunc = function (req, res) {
     const latitude = req.body.latitude;
     const longitude = req.body.longitude;
     const name = req.body.name;
+    const type = req.body.type;
 
     if (!latitude || !longitude || !name) {
         return res.json({
@@ -85,6 +86,7 @@ exports.newLocationFunc = function (req, res) {
     location.Latitude = latitude;
     location.Longitude = longitude;
     location.Name = name;
+    location.Type = type;
     location.save(err => {
         if (err) {
             return res.json({ success: false, err: err });

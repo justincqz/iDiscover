@@ -22,6 +22,40 @@ function getLocationIds(l) {
     return res;
 }
 
+function findLocation(id, locations) {
+    for (var i = 0; i < locations.length; i++) {
+        if (locations[i]._id.toString() == id) {
+            console.log("here");
+            return locations[i];
+        }
+    }
+}
+
+function combineAudioLocs(locations, audios) {
+    var clips = [];
+    var locationPins = [];
+    console.log(audios);
+    console.log(locations);
+    for (var i = 0; i < audios.length; i++) {
+        const location = findLocation(audios[i].LocationID, locations);
+        locationPins.push({ "lon": location.Longitude, "lat": location.Latitude });
+        clips.push({
+            "audio_id": audios[i]._id, "title": audios[i].Title,
+            "artist": audios[i].Artist, "type": location.Type, "playcount": audios[i].PlayCount,
+            "votes": audios[i].Votes
+        });
+    }
+    return { "clips": clips, "locationPins": locationPins };
+}
+
+function prettifyRouteData(locations, route, audios) {
+    var res = combineAudioLocs(locations, audios);
+    return {
+        "_id": route._id, "title": route.Title, "creator": route.Creator,
+        "clips": res.clips, "locationPins": res.locationPins
+    };
+}
+
 exports.upvoteRouteFunc = function (req, res) {
     const id = req.body.id;
 
@@ -58,6 +92,7 @@ exports.newRouteFunc = function (req, res) {
     let route = new Route();
     const title = req.body.title;
     const description = req.body.description;
+    const creator = req.body.nickname;
     var audioIDs = req.body.audioIDs;
 
     console.log(audioIDs)
@@ -67,6 +102,7 @@ exports.newRouteFunc = function (req, res) {
     route.Title = title;
     route.Description = description;
     route.AudioIDs = audioIDs;
+    route.Creator = creator;
 
     route.save(err => {
         if (err) {
@@ -100,7 +136,8 @@ exports.getRouteFunc = function (req, res) {
                                     if (err) {
                                         return res.json({ success: false, err: err });
                                     } else {
-                                        return res.json({ success: true, locations: locations, route: route, audios: audios });
+                                        var data = prettifyRouteData(locations, route, audios);
+                                        return res.json({ success: true, data: data });
                                     }
                                 }
                             )
