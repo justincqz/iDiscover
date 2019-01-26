@@ -1,4 +1,9 @@
-exports.getNearbyAttractions = function (req, res) {
+const GOOGLE_API_KEY = "AIzaSyCEQQ1KxrsWt4Km6a7E_A_vTgBTNk8Tms8";
+const searchRadius = 500;
+const landmarkType = "museum";
+const https = require("https");
+
+exports.getNearbyAttractionsFunc = function (req, res) {
     const lat = req.query.lat;
     const lon = req.query.lon;
 
@@ -41,7 +46,7 @@ exports.getNearbyAttractions = function (req, res) {
 
 };
 
-exports.getGoogleRoute = function (req, res) {
+exports.getGoogleRouteFunc = function (req, res) {
     var placeIDs = req.query.places.split(",");
     var optimise = req.query.optimise;
 
