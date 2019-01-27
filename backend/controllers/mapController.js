@@ -39,16 +39,16 @@ exports.getNearbyAttractionsFunc = function (req, res) {
 
                   landmarks.push(landmarkJSON);
               });
-
-              res.json({
-                  landmarks
-              });
           });
 
       }).on("error", (err) => {
           console.log("Error :" + err.message);
       });
     })
+
+    res.json({
+        landmarks
+    });
 };
 
 exports.getGoogleRouteFunc = function (req, res) {
