@@ -37,7 +37,7 @@ exports.getInfoLocationIDFunc = function (req, res) {
                         if (err) {
                             return res.json({ success: false, err: err });
                         } else {
-                            return res.json({ success: true, loc: location });
+                            return res.json({ success: true, location: location, routes: [], audios: [] });
                         }
                     })
                 } else {
