@@ -58,11 +58,11 @@ exports.getInfoLocationIDFunc = function (req, res) {
                     location.Name = name;
                     location.Type = type;
                     location.PlaceID = id;
-                    location.save(err => {
+                    location.save(async function (err) {
                         if (err) {
                             return res.json({ success: false, err: err });
                         } else {
-                            wiki.createIntroAudio(name, location._id);
+                            await wiki.createIntroAudio(name, location.PlaceID);
                             return res.json({ success: true, location: location, routes: [], audios: [] });
                         }
                     })
