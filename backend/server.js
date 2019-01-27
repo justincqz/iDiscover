@@ -76,6 +76,7 @@ router.post("/newLocation", locController.newLocationFunc);
 router.get("/getLocations", locController.getLocationsFunc);
 router.get("/getLocationByName", locController.getLocationByNameFunc);
 router.get("/getLocationByLongLat", locController.getLocationByLongLatFunc);
+router.get("/getLocWithAudio", locController.getLocWithAudioFunc);
 
 router.post("/upvoteRoute", routeController.upvoteRouteFunc);
 router.post("/downvoteRoute", routeController.downvoteRouteFunc);

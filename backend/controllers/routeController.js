@@ -42,17 +42,17 @@ function combineAudioLocs(locations, audios) {
         clips.push({
             "audio_id": audios[i]._id, "title": audios[i].Title,
             "artist": audios[i].Artist, "type": location.Type, "playcount": audios[i].PlayCount,
-            "votes": audios[i].Votes, "filename": audios[i].FileName
+            "votes": audios[i].Votes, "filename": audios[i].FileName, "placeid": location.PlaceID
         });
     }
-    return { "clips": clips, "locationPins": locationPins };
+    return { "clips": clips };
 }
 
 function prettifyRouteData(locations, route, audios) {
     var res = combineAudioLocs(locations, audios);
     return {
         "_id": route._id, "title": route.Title, "creator": route.Creator,
-        "clips": res.clips, "locationPins": res.locationPins
+        "clips": res.clips
     };
 }
 

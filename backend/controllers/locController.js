@@ -13,6 +13,30 @@ function convertObjectID(l) {
     return res;
 }
 
+exports.getLocWithAudioFunc = function (req, res) {
+    const id = req.body.audioID;
+
+    Audio.findOne(
+        { _id: ObjectId(id) },
+        (err, audio) => {
+            if (err) {
+                return res.json({ success: false, err: err });
+            } else {
+                Location.findOne(
+                    { _id: ObjectId(audio.LocationID) },
+                    (err, loc) => {
+                        if (err) {
+                            return res.json({ success: false, err: err });
+                        } else {
+                            return res.json({ success: true, loc: loc });
+                        }
+                    }
+                )
+            }
+        }
+    )
+}
+
 exports.getInfoLocationIDFunc = function (req, res) {
     const id = req.body.data.placeID;
     const name = req.body.data.name;
