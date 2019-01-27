@@ -40,6 +40,18 @@ exports.uploadAudioFileFunc = function (req, res) {
                                         return res.json({ success: false, err: err });
                                     } else {
                                         console.log(rand);
+
+                                        Location.findOneAndUpdate(
+                                            { PlaceID: audio.LocationID },
+                                            { $push: { AudioIDs: audio._id } },
+                                            (err, loc) => {
+                                                if (err) {
+                                                    return res.json({ success: false, err: err });
+                                                } else {
+                                                    return res.json({ success: true })
+                                                }
+                                            }
+                                        )
                                         res.send(rand);
 
                                     }
