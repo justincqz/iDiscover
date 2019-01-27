@@ -2,6 +2,7 @@ const Location = require("../schemas/location");
 const Audio = require("../schemas/audio");
 const Route = require("../schemas/route");
 const mongoose = require("mongoose");
+const wiki = require("../wiki");
 var ObjectId = mongoose.Types.ObjectId;
 
 function convertObjectID(l) {
@@ -13,12 +14,36 @@ function convertObjectID(l) {
     return res;
 }
 
+exports.getLocWithAudioFunc = function (req, res) {
+    const id = req.body.audioID;
+
+    Audio.findOne(
+        { _id: ObjectId(id) },
+        (err, audio) => {
+            if (err) {
+                return res.json({ success: false, err: err });
+            } else {
+                Location.findOne(
+                    { _id: ObjectId(audio.LocationID) },
+                    (err, loc) => {
+                        if (err) {
+                            return res.json({ success: false, err: err });
+                        } else {
+                            return res.json({ success: true, loc: loc });
+                        }
+                    }
+                )
+            }
+        }
+    )
+}
+
 exports.getInfoLocationIDFunc = function (req, res) {
-    const id = req.body.placeID;
-    const name = req.body.name;
+    const id = req.body.data.placeID;
+    const name = req.body.data.name;
     const type = "Museum";
-    const lat = req.body.lat;
-    const lon = req.body.lon;
+    const lat = req.body.data.lat;
+    const lon = req.body.data.lon;
 
     Location.findOne(
         { PlaceID: id },
@@ -33,11 +58,12 @@ exports.getInfoLocationIDFunc = function (req, res) {
                     location.Name = name;
                     location.Type = type;
                     location.PlaceID = id;
-                    location.save(err => {
+                    location.save(async function (err) {
                         if (err) {
                             return res.json({ success: false, err: err });
                         } else {
-                            return res.json({ success: true, loc: location });
+                            await wiki.createIntroAudio(name, location.PlaceID);
+                            return res.json({ success: true, location: location, routes: [], audios: [] });
                         }
                     })
                 } else {
@@ -150,6 +176,20 @@ exports.getLocationByNameFunc = function (req, res) {
             console.log('%s', loc.Name);
             return res.json({ success: true, loc: loc });
         });
+}
+
+exports.getLocationByIDFunc = function (req, res) {
+    const id = req.body.id;
+    Location.findOne(
+        { _id: ObjectId(id) },
+        (err, loc) => {
+            if (err) {
+                return res.json({ success: false, err: err });
+            } else {
+                return res.json({ success: true, loc: loc });
+            }
+        }
+    )
 }
 
 exports.getLocationByLongLatFunc = function (req, res) {

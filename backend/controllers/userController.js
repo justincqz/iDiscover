@@ -60,7 +60,7 @@ exports.getUserFunc = function (req, res) {
                 return res.json({ success: false, err: err });
             } else {
                 console.log(user);
-                if (user == {}) {
+                if (user == null) {
                     return res.json({ success: false, message: "User not found!" });
                 } else {
                     const salt = user.Salt;
@@ -80,7 +80,7 @@ exports.getUserFunc = function (req, res) {
 
 exports.updateUserAudioFunc = function (req, res) {
     const email = req.body.email;
-    const audioID = ObjectID(req.body.id);
+    const audioName = req.body.audioName;
 
     User.findOneAndUpdate(
         { Email: email },

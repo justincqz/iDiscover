@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 var ObjectId = mongoose.Types.ObjectId;
 
 function convertObjectID(l) {
-    console.log(l);
+    // console.log(l);
     var res = [];
     for (var i = 0; i < l.length; i++) {
         res.push(ObjectId(l[i]));
@@ -42,17 +42,17 @@ function combineAudioLocs(locations, audios) {
         clips.push({
             "audio_id": audios[i]._id, "title": audios[i].Title,
             "artist": audios[i].Artist, "type": location.Type, "playcount": audios[i].PlayCount,
-            "votes": audios[i].Votes
+            "votes": audios[i].Votes, "filename": audios[i].FileName, "placeid": location.PlaceID
         });
     }
-    return { "clips": clips, "locationPins": locationPins };
+    return { "clips": clips };
 }
 
 function prettifyRouteData(locations, route, audios) {
     var res = combineAudioLocs(locations, audios);
     return {
         "_id": route._id, "title": route.Title, "creator": route.Creator,
-        "clips": res.clips, "locationPins": res.locationPins
+        "clips": res.clips
     };
 }
 
@@ -106,26 +106,58 @@ exports.newRouteFunc = function (req, res) {
 
     route.save(err => {
         if (err) {
+            // console.log(err);
+            // console.log(route);
             return res.json({ success: false, err: err });
         } else {
-            return res.json({ success: true, route: route });
+            var success = true;
+            audioIDs.forEach(async function (audioID) {
+                await Audio.findOne(
+                    { _id: ObjectId(audioID) },
+                    (err, audio) => {
+                        if (err) {
+                            return res.json({ success: false, err: err });
+                        } else {
+                            Location.findOneAndUpdate(
+                                { PlaceID: audio.LocationID },
+                                { $push: { RouteIDs: ObjectId(route._id) } },
+                                (err, loc) => {
+                                    if (err) {
+                                        success = false;
+                                    } else {
+                                        success = true;
+                                    }
+                                }
+                            )
+                        }
+                    }
+                )
+            }
+            )
+            return res.json({ success: success, route: route });
         }
     })
 };
 
 exports.getRouteFunc = function (req, res) {
     const routeID = req.body.routeID;
+    console.log(routeID);
 
     Route.findOne(
         { _id: ObjectId(routeID) },
         (err, route) => {
+            console.log(route);
             if (err) {
+                console.log(err);
                 return res.json({ success: false, err: err });
             } else {
+
                 Audio.find(
                     { _id: { $in: route.AudioIDs } },
                     (err, audios) => {
+                        console.log(audios);
                         if (err) {
+                            console.log(err);
                             return res.json({ success: false, err: err });
                         } else {
                             var locations = getLocationIds(audios);
@@ -133,7 +165,9 @@ exports.getRouteFunc = function (req, res) {
                             Location.find(
                                 { PlaceID: { $in: locations } },
                                 (err, locations) => {
+                                    console.log(locations);
                                     if (err) {
+                                        console.log(err);
                                         return res.json({ success: false, err: err });
                                     } else {
                                         var data = prettifyRouteData(locations, route, audios);

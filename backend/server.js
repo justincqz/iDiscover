@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
 const multer = require("multer");
+const moment = require("moment");
 
 const API_PORT = 3001;
 const app = express();
@@ -48,7 +49,7 @@ var storage = multer.diskStorage({
         callback(null, './uploads')
     },
     filename: function (req, file, callback) {
-        rand = file.originalname;
+        rand = moment().unix() + "_" + file.originalname + ".m4a";
 
         callback(null, file.fieldname + '-' + rand);
     }
@@ -65,9 +66,10 @@ router.post("/updateUserAudio", userController.updateUserAudioFunc);
 
 router.post("/uploadAudioFile", upload.single('track'), audioController.uploadAudioFileFunc);
 router.get("/getAudioFile/:name", audioController.getAudioFileFunc);
-router.post("/newAudio", audioController.newAudioFunc);
 router.post("/upvoteAudio", audioController.upvoteAudioFunc);
 router.post("/downvoteAudio", audioController.downvoteAudioFunc);
+router.post("/getAudioInfoUser", audioController.getAudioInfoUserFunc);
+router.post("/addWikiAudio", audioController.addWikiAudioFunc);
 
 router.post("/getInfoLocationID", locController.getInfoLocationIDFunc);
 router.post("/updateLocationWithAudio", locController.updateLocationWithAudioFunc);
@@ -75,6 +77,8 @@ router.post("/newLocation", locController.newLocationFunc);
 router.get("/getLocations", locController.getLocationsFunc);
 router.get("/getLocationByName", locController.getLocationByNameFunc);
 router.get("/getLocationByLongLat", locController.getLocationByLongLatFunc);
+router.get("/getLocWithAudio", locController.getLocWithAudioFunc);
+router.post("/getLocationByID", locController.getLocationByIDFunc);
 
 router.post("/upvoteRoute", routeController.upvoteRouteFunc);
 router.post("/downvoteRoute", routeController.downvoteRouteFunc);
