@@ -176,6 +176,20 @@ exports.getLocationByNameFunc = function (req, res) {
         });
 }
 
+exports.getLocationByIDFunc = function (req, res) {
+    const id = req.body.id;
+    Location.findOne(
+        { _id: ObjectId(id) },
+        (err, loc) => {
+            if (err) {
+                return res.json({ success: false, err: err });
+            } else {
+                return res.json({ success: true, loc: loc });
+            }
+        }
+    )
+}
+
 exports.getLocationByLongLatFunc = function (req, res) {
     const longtitude = req.params.longtitude;
     const latitude = req.params.latitude;
