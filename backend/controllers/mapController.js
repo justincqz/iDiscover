@@ -5,6 +5,8 @@ const https = require("https");
 const mongoose = require("mongoose");
 var ObjectId = mongoose.Types.ObjectId;
 
+const Polyline = require("@mapbox/polyline");
+
 exports.getNearbyAttractionsFunc = function (req, res) {
     const lat = req.query.lat;
     const lon = req.query.lon;
@@ -100,8 +102,19 @@ exports.getGoogleRouteFunc = function (req, res) {
                 return;
             }
 
+            var overview_string = dataJSON.routes[0].overview_polyline.points;
+            var points = Polyline.decode(overview_string);
+
+            var formattedRoutes = [];
+            points.forEach(function (point) {
+                formattedRoutes.push({
+                    latitude: point[0],
+                    longitude: point[1]
+                });
+            })
+
             res.json({
-                "routes": dataJSON.routes
+                routes: formattedRoutes
             });
         });
 
