@@ -48,11 +48,10 @@ exports.uploadAudioFileFunc = function (req, res) {
                                                 if (err) {
                                                     return res.json({ success: false, err: err });
                                                 } else {
-                                                    return res.json({ success: true })
+                                                    res.send(rand);;
                                                 }
                                             }
                                         )
-                                        res.send(rand);
 
                                     }
                                 }
