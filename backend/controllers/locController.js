@@ -2,6 +2,7 @@ const Location = require("../schemas/location");
 const Audio = require("../schemas/audio");
 const Route = require("../schemas/route");
 const mongoose = require("mongoose");
+const wiki = require("../wiki");
 var ObjectId = mongoose.Types.ObjectId;
 
 function convertObjectID(l) {
@@ -61,6 +62,7 @@ exports.getInfoLocationIDFunc = function (req, res) {
                         if (err) {
                             return res.json({ success: false, err: err });
                         } else {
+                            wiki.createIntroAudio(name, location._id);
                             return res.json({ success: true, location: location, routes: [], audios: [] });
                         }
                     })
