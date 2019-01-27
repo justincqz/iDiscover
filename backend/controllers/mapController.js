@@ -13,7 +13,7 @@ exports.getNearbyAttractionsFunc = function (req, res) {
 
     var landmarks = [];
 
-    landmarkTypes.forEach(function(landMarkType)) {
+    landmarkTypes.forEach(function(landMarkType) {
       var query = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=${searchRadius}&type=${landmarkType}&key=${GOOGLE_API_KEY}`;
 
       let data = '';
@@ -48,7 +48,7 @@ exports.getNearbyAttractionsFunc = function (req, res) {
       }).on("error", (err) => {
           console.log("Error :" + err.message);
       });
-    }
+    })
 };
 
 exports.getGoogleRouteFunc = function (req, res) {
