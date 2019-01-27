@@ -6,10 +6,12 @@ const User = require("../schemas/user");
 var ObjectId = mongoose.Types.ObjectId;
 
 exports.uploadAudioFileFunc = function (req, res) {
-    const title = req.body.title;
-    const locationID = req.body.placeID;
-    const artist = req.body.artist;
-    const email = req.body.email;
+    console.log(req.headers);
+    const title = req.headers.title;
+    const locationID = req.headers.placeid;
+    console.log(locationID);
+    const artist = req.headers.artist;
+    const email = req.headers.email;
     const time = moment().unix();
 
     Audio.findOne(
@@ -25,6 +27,7 @@ exports.uploadAudioFileFunc = function (req, res) {
                     audio.Artist = artist;
                     audio.Date = moment().unix();
                     audio.FileName = rand;
+                    console.log(audio);
                     audio.save(err => {
                         if (err) {
                             return res.json({ success: false, err: err });
