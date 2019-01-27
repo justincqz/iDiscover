@@ -5,9 +5,36 @@ const Location = require("../schemas/location");
 var ObjectId = mongoose.Types.ObjectId;
 
 exports.uploadAudioFileFunc = function (req, res) {
-    console.log(req.file);
-    console.log(req.file.path);
-    res.send(rand);
+    const title = req.body.title;
+    const locationID = req.body.placeID;
+    const artist = req.body.artist;
+
+    Audio.findOne(
+        { "Title": title },
+        (err, audio) => {
+            if (err) {
+                return res.json({ success: false, err: err });
+            } else {
+                if (audio == null) {
+                    let audio = Audio();
+                    audio.Title = title;
+                    audio.LocationID = locationID;
+                    audio.Artist = artist;
+                    audio.Date = moment().unix();
+                    audio.save(err => {
+                        if (err) {
+                            return res.json({ success: false, err: err });
+                        } else {
+                            res.send(rand);
+                            return res.json({ success: true, audio: audio });
+                        }
+                    })
+                } else {
+                    return res.json({ success: false, err: "Title has already been chosen!" });
+                }
+            }
+        }
+    )
 };
 
 exports.getAudioFileFunc = function (req, res) {
