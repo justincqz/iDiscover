@@ -40,6 +40,8 @@ exports.getNearbyAttractionsFunc = function (req, res) {
                   console.log(landmarkJSON);
 
                   landmarks.push(landmarkJSON);
+
+                  console.log(landmarks.length);
               });
           });
 
@@ -49,7 +51,7 @@ exports.getNearbyAttractionsFunc = function (req, res) {
     })
 
     res.json({
-        landmarks
+        "landmarks": landmarks
     });
 };
 
