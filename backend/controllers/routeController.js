@@ -110,9 +110,10 @@ exports.newRouteFunc = function (req, res) {
             console.log(route);
             return res.json({ success: false, err: err });
         } else {
-            for (var i = 0; i < audioIDs.length; i++) {
+            var success = true;
+            audioIDs.forEach(function (audioID) {
                 Audio.findOne(
-                    { _id: ObjectId(audioIDs[i]) },
+                    { _id: ObjectId(audioID) },
                     (err, audio) => {
                         if (err) {
                             return res.json({ success: false, err: err });
@@ -122,9 +123,9 @@ exports.newRouteFunc = function (req, res) {
                                 { $push: { RouteIDs: ObjectId(route._id) } },
                                 (err, loc) => {
                                     if (err) {
-                                        return res.json({ success: false, err: err });
+                                        success = false;
                                     } else {
-                                        return res.json({ success: true, route: route });
+                                        success = true;
                                     }
                                 }
                             )
@@ -132,6 +133,8 @@ exports.newRouteFunc = function (req, res) {
                     }
                 )
             }
+            )
+            return res.json({ success: success, route: route });
         }
     })
 };
