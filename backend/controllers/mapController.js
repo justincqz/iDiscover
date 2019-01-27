@@ -37,6 +37,8 @@ exports.getNearbyAttractionsFunc = function (req, res) {
                       lon: result.geometry.location.lng
                   };
 
+                  console.log(landmarkJSON);
+
                   landmarks.push(landmarkJSON);
               });
           });
