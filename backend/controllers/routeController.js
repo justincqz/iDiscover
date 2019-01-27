@@ -106,6 +106,8 @@ exports.newRouteFunc = function (req, res) {
 
     route.save(err => {
         if (err) {
+            console.log(err);
+            console.log(route);
             return res.json({ success: false, err: err });
         } else {
             console.log(route);
