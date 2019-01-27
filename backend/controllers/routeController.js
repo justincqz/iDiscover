@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 var ObjectId = mongoose.Types.ObjectId;
 
 function convertObjectID(l) {
-    console.log(l);
+    // console.log(l);
     var res = [];
     for (var i = 0; i < l.length; i++) {
         res.push(ObjectId(l[i]));
@@ -106,33 +106,29 @@ exports.newRouteFunc = function (req, res) {
 
     route.save(err => {
         if (err) {
-            console.log(err);
-            console.log(route);
+            // console.log(err);
+            // console.log(route);
             return res.json({ success: false, err: err });
         } else {
             var success = true;
-            audioIDs.forEach(function (audioID) {
-                Audio.findOne(
+            audioIDs.forEach(async function (audioID) {
+                await Audio.findOne(
                     { _id: ObjectId(audioID) },
-                    async (err, audio) => {
-                        try {
-                            if (err) {
-                                return res.json({ success: false, err: err });
-                            } else {
-                                await Location.findOneAndUpdate(
-                                    { PlaceID: audio.LocationID },
-                                    { $push: { RouteIDs: ObjectId(route._id) } },
-                                    (err, loc) => {
-                                        if (err) {
-                                            success = false;
-                                        } else {
-                                            success = true;
-                                        }
+                    (err, audio) => {
+                        if (err) {
+                            return res.json({ success: false, err: err });
+                        } else {
+                            Location.findOneAndUpdate(
+                                { PlaceID: audio.LocationID },
+                                { $push: { RouteIDs: ObjectId(route._id) } },
+                                (err, loc) => {
+                                    if (err) {
+                                        success = false;
+                                    } else {
+                                        success = true;
                                     }
-                                )
-                            }
-                        } catch (e) {
-                            console.log(e);
+                                }
+                            )
                         }
                     }
                 )
