@@ -49,7 +49,7 @@ var storage = multer.diskStorage({
         callback(null, './uploads')
     },
     filename: function (req, file, callback) {
-        rand = moment().unix() + "_" + file.originalname;
+        rand = moment().unix() + "_" + file.originalname + ".m4a";
 
         callback(null, file.fieldname + '-' + rand);
     }

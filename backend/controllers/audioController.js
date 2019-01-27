@@ -26,7 +26,7 @@ exports.uploadAudioFileFunc = function (req, res) {
                     audio.LocationID = locationID;
                     audio.Artist = artist;
                     audio.Date = moment().unix();
-                    audio.FileName = rand + ".m4a";
+                    audio.FileName = rand;
                     console.log(audio);
                     audio.save(err => {
                         if (err) {
