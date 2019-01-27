@@ -22,7 +22,7 @@ exports.createIntroAudio = async function (locationName, locationID) {
     audio.LocationID = locationID;
     audio.Artist = "Wikipedia";
     audio.Title = locationName + " Introduction"
-    audio.FileName = moment().unix() + "-" + locationName + ".mp3";
+    audio.FileName = (moment().unix() + "-" + locationName + ".mp3").replace(/\s/g, '');
 
     await client.get(searchString, '', async function (data, res) {
         var values = Object.values(data.query.pages);
