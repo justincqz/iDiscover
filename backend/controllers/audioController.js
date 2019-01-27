@@ -5,6 +5,21 @@ const Location = require("../schemas/location");
 const User = require("../schemas/user");
 var ObjectId = mongoose.Types.ObjectId;
 
+exports.getAudioInfoUserFunc = function (req, res) {
+    const titles = req.body.titles;
+
+    Audio.find(
+        { Title: { $in: titles } },
+        (err, audios) => {
+            if (err) {
+                return res.json({ success: false, err: err });
+            } else {
+                return res.json({ success: true, audios: audios });
+            }
+        }
+    )
+}
+
 exports.uploadAudioFileFunc = function (req, res) {
     console.log(req.headers);
     const title = req.headers.title;
@@ -27,6 +42,7 @@ exports.uploadAudioFileFunc = function (req, res) {
                     audio.Artist = artist;
                     audio.Date = moment().unix();
                     audio.FileName = rand;
+                    audio.ActualTitle = title;
                     console.log(audio);
                     audio.save(err => {
                         if (err) {

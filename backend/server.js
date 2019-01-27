@@ -68,6 +68,7 @@ router.post("/uploadAudioFile", upload.single('track'), audioController.uploadAu
 router.get("/getAudioFile/:name", audioController.getAudioFileFunc);
 router.post("/upvoteAudio", audioController.upvoteAudioFunc);
 router.post("/downvoteAudio", audioController.downvoteAudioFunc);
+router.post("/getAudioInfoUser", audioController.getAudioInfoUserFunc);
 
 router.post("/getInfoLocationID", locController.getInfoLocationIDFunc);
 router.post("/updateLocationWithAudio", locController.updateLocationWithAudioFunc);
