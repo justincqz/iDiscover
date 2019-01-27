@@ -13,7 +13,7 @@ exports.getNearbyAttractionsFunc = function (req, res) {
 
     var landmarks = [];
 
-    landmarkTypes.forEach(function(landMarkType) {
+    landmarkTypes.forEach(function(landmarkType) {
       var query = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=${searchRadius}&type=${landmarkType}&key=${GOOGLE_API_KEY}`;
 
       let data = '';
