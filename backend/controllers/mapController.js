@@ -117,14 +117,13 @@ exports.getGoogleRouteFunc = function (req, res) {
                     longitude: point[1]
                 });
             })
-
-            res.json({
-                routes: formattedRoutes
-            });
         });
 
     }).on("error", (err) => {
         console.log("Error :" + err.message);
     });
 
+    res.json({
+        routes: formattedRoutes
+    });
 };
