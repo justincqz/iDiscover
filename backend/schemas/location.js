@@ -9,7 +9,8 @@ const LocationSchema = new Schema(
         Name: { type: String, required: true },
         AudioIDs: { type: [ObjectIdSchema], default: [] },
         RouteIDs: { type: [ObjectIdSchema], default: [] },
-        Type: { type: String, required: true }
+        Type: { type: String, required: true },
+        PlaceID: { type: String, required: true }
     }
 );
 

@@ -14,45 +14,66 @@ function convertObjectID(l) {
 }
 
 exports.getInfoLocationIDFunc = function (req, res) {
-    const id = req.body.id;
+    const id = req.body.placeID;
+    const name = req.body.name;
+    const type = "Museum";
+    const lat = req.body.lat;
+    const lon = req.body.lon;
 
     Location.findOne(
-        { _id: ObjectId(id) },
+        { PlaceID: id },
         (err, loc) => {
             if (err) {
                 return res.json({ success: false, err: err });
             } else {
-                var audioIDs = convertObjectID(loc.AudioIDs);
-                var routeIDs = convertObjectID(loc.RouteIDs);
-                Audio.find(
-                    { _id: { $in: audioIDs } },
-                    (err, audios) => {
+                if (loc == null) {
+                    let location = Location();
+                    location.Longitude = lon;
+                    location.Latitude = lat;
+                    location.Name = name;
+                    location.Type = type;
+                    location.PlaceID = id;
+                    location.save(err => {
                         if (err) {
                             return res.json({ success: false, err: err });
                         } else {
-                            Route.find(
-                                { _id: { $in: routeIDs } },
-                                (err, routes) => {
-                                    if (err) {
-                                        return res.json({ success: false, err: err });
-                                    } else {
-                                        return res.json({ success: true, location: loc, routes: routes, audios: audios });
-                                    }
-                                }
-                            )
+                            return res.json({ success: true, loc: location });
                         }
-                    }
-                )
+                    })
+                } else {
+
+                    var audioIDs = convertObjectID(loc.AudioIDs);
+                    var routeIDs = convertObjectID(loc.RouteIDs);
+                    Audio.find(
+                        { _id: { $in: audioIDs } },
+                        (err, audios) => {
+                            if (err) {
+                                return res.json({ success: false, err: err });
+                            } else {
+                                Route.find(
+                                    { _id: { $in: routeIDs } },
+                                    (err, routes) => {
+                                        if (err) {
+                                            return res.json({ success: false, err: err });
+                                        } else {
+                                            return res.json({ success: true, location: loc, routes: routes, audios: audios });
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    )
+                }
             }
         }
     )
 }
 
 exports.updateLocationWithAudioFunc = function (req, res) {
-    const name = req.body.locationName;
+    const id = req.body.placeID;
     const audioID = ObjectId(req.body.audioID);
     Location.findOneAndUpdate(
-        { 'Name': name },
+        { 'PlaceID': id },
         { '$push': { 'AudioIDs': audioID } },
         (err, _) => {
             if (err) {

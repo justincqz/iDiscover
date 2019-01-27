@@ -2,6 +2,8 @@ const GOOGLE_API_KEY = "AIzaSyCEQQ1KxrsWt4Km6a7E_A_vTgBTNk8Tms8";
 const searchRadius = 500;
 const landmarkType = "museum";
 const https = require("https");
+const mongoose = require("mongoose");
+var ObjectId = mongoose.Types.ObjectId;
 
 exports.getNearbyAttractionsFunc = function (req, res) {
     const lat = req.query.lat;

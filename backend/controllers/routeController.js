@@ -16,7 +16,7 @@ function convertObjectID(l) {
 function getLocationIds(l) {
     var res = [];
     for (var i = 0; i < l.length; i++) {
-        res.push(ObjectId(l[i].LocationID));
+        res.push(l[i].LocationID);
     }
 
     return res;
@@ -24,7 +24,7 @@ function getLocationIds(l) {
 
 function findLocation(id, locations) {
     for (var i = 0; i < locations.length; i++) {
-        if (locations[i]._id.toString() == id) {
+        if (locations[i].PlaceID == id) {
             console.log("here");
             return locations[i];
         }
@@ -131,7 +131,7 @@ exports.getRouteFunc = function (req, res) {
                             var locations = getLocationIds(audios);
 
                             Location.find(
-                                { _id: { $in: locations } },
+                                { PlaceID: { $in: locations } },
                                 (err, locations) => {
                                     if (err) {
                                         return res.json({ success: false, err: err });

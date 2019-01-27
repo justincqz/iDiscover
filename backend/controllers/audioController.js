@@ -32,7 +32,7 @@ exports.newAudioFunc = function (req, res) {
 
     audio.Date = moment().unix();
     audio.Title = title;
-    audio.LocationID = ObjectId(locationID);
+    audio.LocationID = locationID;
     audio.Artist = artist;
 
     audio.save(err => {
