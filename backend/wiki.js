@@ -40,7 +40,7 @@ async function convert(text, audio) {
         // Select the language and SSML Voice Gender (optional)
         voice: { languageCode: 'en-US', ssmlGender: 'NEUTRAL' },
         // Select the type of audio encoding
-        audioConfig: { audioEncoding: 'MP3' },
+        audioConfig: { audioEncoding: 'MP3', sampleRateHertz: 48000 },
     };
     const [response] = await clientta.synthesizeSpeech(request);
     // Write the binary audio content to a local file
@@ -59,7 +59,7 @@ async function convert(text, audio) {
                             error: err
                         })
                     }
-                    await writeFile("uploads/" + "track-" + audio.FileName, response.audioContent, 'binary');
+                    await writeFile("uploads/" + "track-" + audio.FileName.replace(/\s/g, ''), response.audioContent, 'binary');
                     console.log('Audio content written to file: output.mp3');
                 }
             )
