@@ -60,7 +60,7 @@ exports.getUserFunc = function (req, res) {
                 return res.json({ success: false, err: err });
             } else {
                 console.log(user);
-                if (user == {}) {
+                if (user == null) {
                     return res.json({ success: false, message: "User not found!" });
                 } else {
                     const salt = user.Salt;
