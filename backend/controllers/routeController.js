@@ -118,17 +118,23 @@ exports.newRouteFunc = function (req, res) {
 
 exports.getRouteFunc = function (req, res) {
     const routeID = req.body.routeID;
+    console.log(routeID);
 
     Route.findOne(
         { _id: ObjectId(routeID) },
         (err, route) => {
+            console.log(route);
             if (err) {
+                console.log(err);
                 return res.json({ success: false, err: err });
             } else {
+
                 Audio.find(
                     { _id: { $in: route.AudioIDs } },
                     (err, audios) => {
+                        console.log(audios);
                         if (err) {
+                            console.log(err);
                             return res.json({ success: false, err: err });
                         } else {
                             var locations = getLocationIds(audios);
@@ -136,7 +142,9 @@ exports.getRouteFunc = function (req, res) {
                             Location.find(
                                 { PlaceID: { $in: locations } },
                                 (err, locations) => {
+                                    console.log(locations);
                                     if (err) {
+                                        console.log(err);
                                         return res.json({ success: false, err: err });
                                     } else {
                                         var data = prettifyRouteData(locations, route, audios);
