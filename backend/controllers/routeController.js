@@ -42,7 +42,7 @@ function combineAudioLocs(locations, audios) {
         clips.push({
             "audio_id": audios[i]._id, "title": audios[i].Title,
             "artist": audios[i].Artist, "type": location.Type, "playcount": audios[i].PlayCount,
-            "votes": audios[i].Votes
+            "votes": audios[i].Votes, "filename": audios[i].FileName
         });
     }
     return { "clips": clips, "locationPins": locationPins };
