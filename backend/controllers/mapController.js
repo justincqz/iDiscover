@@ -1,6 +1,6 @@
 const GOOGLE_API_KEY = "AIzaSyCEQQ1KxrsWt4Km6a7E_A_vTgBTNk8Tms8";
 const searchRadius = 500;
-const landmarkType = "museum";
+const landmarkTypes = ["museum", "amusement_park", "art_gallery", "library", "church", "city_hall"];
 const https = require("https");
 const mongoose = require("mongoose");
 var ObjectId = mongoose.Types.ObjectId;
@@ -11,43 +11,44 @@ exports.getNearbyAttractionsFunc = function (req, res) {
     const lat = req.query.lat;
     const lon = req.query.lon;
 
-    var query = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=${searchRadius}&type=${landmarkType}&key=${GOOGLE_API_KEY}`;
+    var landmarks = [];
 
-    let data = '';
+    landmarkTypes.forEach(function(landMarkType)) {
+      var query = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=${searchRadius}&type=${landmarkType}&key=${GOOGLE_API_KEY}`;
 
-    console.log("request sent.");
-    https.get(query, (queryRes) => {
-        console.log("response received.");
+      let data = '';
 
-        queryRes.on('data', (chunk) => {
-            data += chunk;
-        });
+      console.log("request sent.");
+      https.get(query, (queryRes) => {
+          console.log("response received.");
 
-        queryRes.on('end', () => {
+          queryRes.on('data', (chunk) => {
+              data += chunk;
+          });
 
-            var landmarks = [];
-            JSON.parse(data).results.forEach(function (result) {
-
-                var landmarkJSON = {
-                    name: result.name,
-                    placeID: result.place_id,
-                    lat: result.geometry.location.lat,
-                    lon: result.geometry.location.lng
-                };
-
-                landmarks.push(landmarkJSON);
-            });
-
-            res.json({
-                landmarks
-            });
-        });
-
-    }).on("error", (err) => {
-        console.log("Error :" + err.message);
-    });
+          queryRes.on('end', () => {
 
 
+              JSON.parse(data).results.forEach(function (result) {
+                  var landmarkJSON = {
+                      name: result.name,
+                      placeID: result.place_id,
+                      lat: result.geometry.location.lat,
+                      lon: result.geometry.location.lng
+                  };
+
+                  landmarks.push(landmarkJSON);
+              });
+
+              res.json({
+                  landmarks
+              });
+          });
+
+      }).on("error", (err) => {
+          console.log("Error :" + err.message);
+      });
+    }
 };
 
 exports.getGoogleRouteFunc = function (req, res) {
