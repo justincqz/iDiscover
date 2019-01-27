@@ -3,6 +3,7 @@ const moment = require("moment");
 const mongoose = require("mongoose");
 const Location = require("../schemas/location");
 const User = require("../schemas/user");
+const wiki = require("../wiki");
 var ObjectId = mongoose.Types.ObjectId;
 
 exports.getAudioInfoUserFunc = function (req, res) {
@@ -118,4 +119,14 @@ exports.downvoteAudioFunc = function (req, res) {
             }
         }
     )
+}
+
+exports.addWikiAudioFunc = function (req, res) {
+    const locationName = req.body.name;
+    const id = req.body.id;
+
+    wiki.createIntroAudio(locationName, id);
+
+    res.json({ success: true });
+
 }
