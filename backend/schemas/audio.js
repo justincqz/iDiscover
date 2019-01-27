@@ -9,7 +9,8 @@ const AudioSchema = new Schema(
         Votes: { type: Number, default: 0 },
         Artist: { type: String, required: true },
         Title: { type: String, required: true },
-        PlayCount: { type: Number, default: 0 }
+        PlayCount: { type: Number, default: 0 },
+        FileName: { type: String, required: true }
     }
 );
 

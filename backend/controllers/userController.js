@@ -80,7 +80,7 @@ exports.getUserFunc = function (req, res) {
 
 exports.updateUserAudioFunc = function (req, res) {
     const email = req.body.email;
-    const audioID = ObjectID(req.body.id);
+    const audioName = req.body.audioName;
 
     User.findOneAndUpdate(
         { Email: email },
