@@ -13,20 +13,20 @@ exports.getNearbyAttractionsFunc = function (req, res) {
 
     var landmarks = [];
 
-    landmarkTypes.forEach(function(landmarkType) {
+    landmarkTypes.forEach(async function(landmarkType) {
       var query = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=${searchRadius}&type=${landmarkType}&key=${GOOGLE_API_KEY}`;
 
       let data = '';
 
       console.log("request sent.");
-      https.get(query, (queryRes) => {
+      await https.get(query, function (queryRes) {
           console.log("response received.");
 
           queryRes.on('data', (chunk) => {
               data += chunk;
           });
 
-          queryRes.on('end', () => {
+          queryRes.on('end', function () {
 
 
               JSON.parse(data).results.forEach(function (result) {
