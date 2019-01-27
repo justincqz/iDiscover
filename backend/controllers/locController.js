@@ -14,11 +14,11 @@ function convertObjectID(l) {
 }
 
 exports.getInfoLocationIDFunc = function (req, res) {
-    const id = req.body.placeID;
-    const name = req.body.name;
+    const id = req.body.data.placeID;
+    const name = req.body.data.name;
     const type = "Museum";
-    const lat = req.body.lat;
-    const lon = req.body.lon;
+    const lat = req.body.data.lat;
+    const lon = req.body.data.lon;
 
     Location.findOne(
         { PlaceID: id },
