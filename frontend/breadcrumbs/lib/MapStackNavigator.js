@@ -4,10 +4,7 @@ import { Header } from 'react-native-elements';
 import {createStackNavigator, createAppNavigator} from 'react-navigation';
 import ListenMap from './ListenMap.js';
 import CreateView from './CreateView.js';
-
-const creator_light = '#9d46ff';
-const creator_primary = '#6200ea';
-const creator_dark = '#0a00b6';
+import colors from './colors.js';
 
 class BackButton extends React.Component {
 
@@ -38,9 +35,9 @@ export default MapStackNavigator = createStackNavigator({
     screen: CreateView,
     navigationOptions: () => ({
       title: "Record",
-      headerTintColor: creator_dark,
+      headerTintColor: colors.creator.clr_dark,
       headerStyle: {
-        backgroundColor: creator_light
+        backgroundColor: colors.creator.clr_light
       },
     })
   }

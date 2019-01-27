@@ -6,9 +6,9 @@ export default colors = {
   clr_dark: '#c41c00',
 
   creator: {
-    clr_light:'#9d46ff',
-    clr_primary:'#6200ea',
-    clr_dark:'#0a00b6'
+    clr_light:'#980082',
+    clr_primary:'#3a016b',
+    clr_dark:'#fff5c9'
   },
 
   nearly_white: '#eeeeee'

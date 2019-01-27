@@ -17,13 +17,14 @@ export default MainNav = createBottomTabNavigator({
         const { routeName } = navigation.state;
         let iconName;
         let IconSource;
+        
 
-        if (routeName === 'Listen') {
+        if (routeName === 'Profile') {
+          IconSource = Feather;
+          iconName = 'user';
+        } else if (routeName === 'Listen') {
           IconSource = focused ? Ionicons : Feather;
           iconName = focused ? 'md-headset' : 'headphones';
-        } else if (routeName === 'Profile') {
-          IconSource = Feather;
-          iconName = 'settings';
         }
 
         return <IconSource name={iconName} size={25} color={tintColor} />;

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableWithoutFeedback, ScrollView, Button } 
 import { Dimensions } from "react-native";
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from './colors';
+import AudioPlayer from './AudioPlayer.js';
 
 var width = Dimensions.get('window').width;
 var height = Dimensions.get('window').height;
@@ -77,6 +78,22 @@ const styles = StyleSheet.create({
     padding: 1,
     flexDirection: 'column',
     flexGrow: 3,
+  },
+  activeAudioClip: {
+    padding: 10,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    backgroundColor: colors.nearly_white,
+    alignItems: 'center',
+    backgroundColor: colors.clr_light
+  },
+  bufferAudioClip: {
+    padding: 10,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    backgroundColor: colors.clr_light,
+    alignItems: 'center',
+    backgroundColor: colors.clr_primary
   }
 });
 
@@ -86,62 +103,63 @@ export default class TourView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      activeClip: -1,
       currentlyPlaying: null,
+      loading: true,
       tour: {
         tour_id: '1312',
         tour_name: 'joe dart',
         author: 'joe',
-        clips: [
-          {
-            audio_id: "bla",
-            title: "Clip 1",
-            artist: "Jane Doe",
-            type: "Museum",
-            views: 500,
-            upvotes: 11
-          },
-          {
-            audio_id: "bla2",
-            title: "Clip 2",
-            artist: "The description",
-            type: "Art_Gallery",
-            views: 33,
-            upvotes: 15
-          }, 
-          {
-            audio_id: "bla3",
-            title: "Clip 3",
-            artist: "The description",
-            type: "Museum",
-            views: 1773,
-            upvotes: 5
-          },
-          {
-            audio_id: "bl4",
-            title: "Clip 4",
-            artist: "The description",
-            type: "School",
-            views: 48,
-            upvotes: 16
-          },
-          {
-            audio_id: "bl5",
-            title: "Clip 5",
-            artist: "The description",
-            type: "Art_Gallery",
-            views: 9993,
-            upvotes: 902
-          }
-        ],
-        location_pins: [
-          {
-            lon: '',
-            lat: '',
-          }
-        ]
+        clips: [],
+        location_pins: []
       }
     }
+    this.player;
+    this.place_names = [];
+    console.log("COns: " + props.tourId);
   }
+
+  _loadLocationInfo = async () => {
+
+    fetch("http://hanneshertach.com:3001/api/getRoute", {
+      method:'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        routeID: this.props.tourId
+      })
+    }).then(response => response.json())
+      .then((data) => {
+        this.setState({
+          tour: data.data,
+          clips: data.data.clips,
+          loading: false
+        }, () => {
+          this.props.displayRoute(this.state.clips);
+          for (let i = 0; i < this.state.clips.size; i++) {
+            fetch("http://hanneshertach.com:3001/api/getLocationByID", {
+              method:'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: this.state.clips[i].place_id,
+              })
+            })
+            .then(response => response.json())
+            .then((data) => {
+              console.log(data);
+              this.place_names.push(data.loc)
+            });
+          }
+        });
+      })
+  }
+
+  componentDidMount = () => {
+    this._loadLocationInfo();
+  };
   
   _displayIcon = (type) => {
     let iconName;
@@ -171,15 +189,63 @@ export default class TourView extends React.Component {
     return (<IconLib name={iconName} size={size} color={colors.clr_dark} />);
   }
 
-  _togglePlayback = (id) => {
+  _togglePlayback = async (filename) => {
 
-    console.log("Playing toggled");
+    console.log(filename);
+
+    const playbackURL = "http://hanneshertach.com:3001/api/getAudioFile/" + filename;
+
+    if (this.state.currentlyPlaying != null) {
+      await this.state.currentlyPlaying.unload();
+      this.setState({
+        currentlyPlaying: null,
+        activeClip: -1
+      });
+      
+    } else {
+      this.player = new AudioPlayer(playbackURL);
+      await this.player.initialize();
+      await this.player.startPlayingWithCallback(this._onPlaybackStatusUpdate);
+      await this.setState({
+        currentlyPlaying: this.player
+      });
+      console.log("Song started...");
+    }
 
   };
 
+  _onPlaybackStatusUpdate = playbackStatus => {
+    if (playbackStatus.isLoaded) {
+
+      if (playbackStatus.isBuffering) {
+        this.setState({
+          buffering: true,
+        });
+      } else if (this.state.buffering) {
+        this.setState({
+          buffering: false,
+        });
+      }
+    
+      if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
+        this.setState({
+          activeClip: -1,
+          currentlyPlaying: null,
+        });
+      }
+  
+    }
+  }
+
   render() {
+
+    if (this.state.loading) {
+      return (<Text>Loading...</Text>);
+    }
+
     return (
       <View style={{flex: 1, flexDirection: 'column', width: width}}>
+        {console.log("Names: "+ this.place_names)}
         <TouchableWithoutFeedback onPress={this.props.closeFunc}>
           <View style={{backgroundColor: colors.clr_dark, height: 17, alignSelf: 'stretch', alignItems: 'center'}}>
             <AntDesign name="caretdown" size={15} color={colors.clr_light} />
@@ -194,8 +260,8 @@ export default class TourView extends React.Component {
           }}>
 
           <View style={styles.header_title}>
-            <Text style={styles.title}>Tour Title</Text>
-            <Text style={styles.subtitle}>Johnny Johnson</Text>
+            <Text style={styles.title}>{this.state.tour.title}</Text>
+            <Text style={styles.subtitle}>{this.state.tour.author}</Text>
           </View>
 
           <View style={styles.content}>
@@ -205,17 +271,18 @@ export default class TourView extends React.Component {
             {this.state.clips.map((place, i) => (
               <TouchableWithoutFeedback onPress={() => {
                 this.setState({
-                  currentlyPlaying: place.audio_id
+                  activeClip: i
                 });
-                this._togglePlayback();
+                this._togglePlayback(place.filename);
               }} key={i}>              
-                <View style={styles.content_list}>
+                <View style={ this.state.activeClip != i ?
+                  styles.content_list : (this.state.buffering? styles.bufferAudioClip : styles.activeAudioClip)}>
                   {this._displayIcon(place.type)}
                   <View style={styles.content_two_layer_prio} key={i}>
                     <Text>{place.title}</Text>
-                    <Text>{place.artist}</Text>
+                    <Text>{place.creator}</Text>
                   </View>
-                  <View style={styles.content_two_layer}>
+                  <View style={styles.content_two_layer }>
                     <View style={{flexDirection: 'row'}}>
                       <Text>{place.views}</Text>
                       {this._displayIcon('View')}

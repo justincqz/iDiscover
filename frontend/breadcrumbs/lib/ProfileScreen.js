@@ -70,18 +70,21 @@ class ProfileScreen extends React.Component {
       loggedIn: false,
       recordedClips: [
         {
-          title: "Clip1",
-          description: "Description for clip 1"
+          ActualTitle: "Clip1",
+          Description: "Description for clip 1"
         },
         {
-          title: "Clip1",
-          description: "Description for clip 1"
+          ActualTitle: "Clip1",
+          Description: "Description for clip 1"
         },
         {
-          title: "Clip1",
-          description: "Description for clip 1"
+          ActualTitle: "Clip1",
+          Description: "Description for clip 1"
         }
-      ]
+      ],
+      firstName: "",
+      lastName: "",
+      nickName: ""
     }
 
   }
@@ -95,9 +98,13 @@ class ProfileScreen extends React.Component {
   render() {
 
     if (!this.state.loggedIn) {
-      return (<LoginPage loginSuccess={() => {
+      return (<LoginPage loginSuccess={(user, clips) => {
         this.setState({
-          loggedIn: true
+          loggedIn: true,
+          firstName: user.FirstName,
+          lastName: user.LastName,
+          nickName: user.Nickname,
+          recordedClips: clips
         });
       }} />);
     }
@@ -119,7 +126,7 @@ class ProfileScreen extends React.Component {
           </View>
           <View style={{marginLeft:7}}>
             <View style={styles.header_title}>
-              <Text style={styles.title}>Peter Peterson</Text>
+              <Text style={styles.title}>{this.state.nickName}</Text>
             </View>
             <View style={styles.content}>
               <View style={styles.content_header}>
@@ -132,8 +139,8 @@ class ProfileScreen extends React.Component {
                     borderTopColor: 'gray',
                     borderTopWidth: 1
                   }} key={i}>
-                    <Text style={{fontWeight: 'bold'}}>{clip.title}</Text>
-                    <Text>{clip.description}</Text>
+                    <Text style={{fontWeight: 'bold'}}>{clip.ActualTitle}</Text>
+                    <Text>{clip.Description}</Text>
                   </View>
                 ))}
               </ScrollView>

@@ -100,8 +100,17 @@ exports.getGoogleRouteFunc = function (req, res) {
                 return;
             }
 
+            let formattedRoutes = [];
+
+            dataJSON.routes.forEach(function(point) {
+                formattedRoutes.push({
+                    latitude: point[0],
+                    longitude: point[1]
+                });
+            });
+
             res.json({
-                "routes": dataJSON.routes
+                "routes": formattedRoutes
             });
         });
 
