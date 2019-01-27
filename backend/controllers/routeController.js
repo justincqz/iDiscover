@@ -110,8 +110,28 @@ exports.newRouteFunc = function (req, res) {
             console.log(route);
             return res.json({ success: false, err: err });
         } else {
-            console.log(route);
-            return res.json({ success: true, route: route });
+            for (var i = 0; i < audioIDs.length; i++) {
+                Audio.findOne(
+                    { _id: ObjectId(audioIDs[i]) },
+                    (err, audio) => {
+                        if (err) {
+                            return res.json({ success: false, err: err });
+                        } else {
+                            Location.findOneAndUpdate(
+                                { PlaceID: audio.LocationID },
+                                { $push: { RouteIDs: ObjectId(route._id) } },
+                                (err, loc) => {
+                                    if (err) {
+                                        return res.json({ success: false, err: err });
+                                    } else {
+                                        return res.json({ success: true, route: route });
+                                    }
+                                }
+                            )
+                        }
+                    }
+                )
+            }
         }
     })
 };
