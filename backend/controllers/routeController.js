@@ -114,21 +114,25 @@ exports.newRouteFunc = function (req, res) {
             audioIDs.forEach(function (audioID) {
                 Audio.findOne(
                     { _id: ObjectId(audioID) },
-                    (err, audio) => {
-                        if (err) {
-                            return res.json({ success: false, err: err });
-                        } else {
-                            Location.findOneAndUpdate(
-                                { PlaceID: audio.LocationID },
-                                { $push: { RouteIDs: ObjectId(route._id) } },
-                                (err, loc) => {
-                                    if (err) {
-                                        success = false;
-                                    } else {
-                                        success = true;
+                    async (err, audio) => {
+                        try {
+                            if (err) {
+                                return res.json({ success: false, err: err });
+                            } else {
+                                await Location.findOneAndUpdate(
+                                    { PlaceID: audio.LocationID },
+                                    { $push: { RouteIDs: ObjectId(route._id) } },
+                                    (err, loc) => {
+                                        if (err) {
+                                            success = false;
+                                        } else {
+                                            success = true;
+                                        }
                                     }
-                                }
-                            )
+                                )
+                            }
+                        } catch (e) {
+                            console.log(e);
                         }
                     }
                 )
